@@ -2,29 +2,58 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Host Panel</title>
+  <title>Панель ведущего</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <div class="container">
-  <h2>👨‍⚕️ Панель организатора</h2>
-  <p>Это административная страница для проверки результатов.</p>
-  <table id="leaderboard" style="margin:0 auto; border-collapse:collapse;">
+  <h2>👨‍🏫 Панель ведущего</h2>
+  <p>Общая таблица результатов студентов:</p>
+
+  <table id="leaderboard" style="margin:0 auto;border-collapse:collapse;">
     <thead>
       <tr><th>Имя</th><th>Очки</th></tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <hr style="margin: 30px 0;">
+
+  <h3>📘 Вопросы викторины:</h3>
+  <div id="questions"></div>
 </div>
 
 <script>
-// В будущем можно подключить базу данных или WebSocket для реальных результатов
-const scores = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+// обновление таблицы результатов
+async function updateLeaderboard() {
+  const response = await fetch("/get_leaderboard");
+  const data = await response.json();
+  const tbody = document.querySelector("#leaderboard tbody");
+  tbody.innerHTML = "";
+  data.forEach(row => {
+    tbody.innerHTML += `<tr><td>${row.name}</td><td>${row.score}</td></tr>`;
+  });
+}
 
-const tbody = document.querySelector("#leaderboard tbody");
-scores.sort((a, b) => b.score - a.score).forEach(s => {
-  tbody.innerHTML += `<tr><td>${s.name}</td><td>${s.score}</td></tr>`;
-});
+// отображение всех вопросов
+async function loadQuestions() {
+  const response = await fetch("/get_questions");
+  const questions = await response.json();
+  const qDiv = document.getElementById("questions");
+  qDiv.innerHTML = "";
+  questions.forEach((q, index) => {
+    let opts = q.options.map(o => `<li>${o}</li>`).join("");
+    qDiv.innerHTML += `<div style="text-align:left;margin-bottom:15px;">
+      <b>${index+1}. ${q.question}</b>
+      <ul>${opts}</ul>
+      <p style="color:#ffea00;">Правильный ответ: ${q.answer}</p>
+    </div>`;
+  });
+}
+
+updateLeaderboard();
+loadQuestions();
+setInterval(updateLeaderboard, 3000); // обновление каждые 3 секунды
 </script>
 </body>
 </html>
