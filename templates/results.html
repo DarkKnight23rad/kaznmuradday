@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Результаты</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h2>Результаты викторины</h2>
+  <p class="result">Ваш результат: <span id="score"></span></p>
+  <audio id="applause" src="{{ url_for('static', filename='applause.mp3') }}"></audio>
+  <button onclick="location.href='/'">Начать заново</button>
+</div>
+
+<script>
+window.onload = () => {
+  const score = localStorage.getItem("score");
+  document.getElementById("score").innerText = `${score}`;
+  document.getElementById("applause").play();
+};
+</script>
+</body>
+</html>
