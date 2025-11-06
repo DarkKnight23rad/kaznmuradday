@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Radiology Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h2>🧠 Викторина по КТ</h2>
+  <div id="timer" class="timer">15</div>
+  <div id="question"></div>
+  <div id="options"></div>
+  <div id="result"></div>
+</div>
+
+<script>
+const questions = {{ questions|tojson }};
+let current = 0, score = 0, timeLeft = 15, timer;
+
+function showQuestion() {
+  if (current >= questions.length) {
+    localStorage.setItem("score", score);
+    window.location.href = "/results";
+    return;
+  }
+
+  document.getElementById("result").innerHTML = "";
+  let q = questions[current];
+  document.getElementById("question").innerHTML = `<h3>${q.question}</h3>`;
+  let opts = "";
+  q.options.forEach(o => {
+    opts += `<button onclick="checkAnswer('${o}')">${o}</button>`;
+  });
+  document.getElementById("options").innerHTML = opts;
+  
+  timeLeft = 15;
+  document.getElementById("timer").innerText = timeLeft;
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      current++;
+      showQuestion();
+    }
+  }, 1000);
+}
+
+function checkAnswer(ans) {
+  if (ans === questions[current].answer) {
+    score++;
+    document.getElementById("result").innerText = "✅ Верно!";
+  } else {
+    document.getElementById("result").innerText = "❌ Неверно!";
+  }
+  clearInterval(timer);
+  setTimeout(() => { current++; showQuestion(); }, 1000);
+}
+
+showQuestion();
+</script>
+</body>
+</html>
