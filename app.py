@@ -41,15 +41,15 @@ def results():
         return render_template("results.html")
 
 
-@app.route("/admin", methods=["GET", "POST"])
+@app.route("/host", methods=["GET", "POST"])
 def admin():
     if request.method == "POST":
         password = request.form.get("password")
         if password == ADMIN_PASSWORD:
             return redirect(url_for("dashboard"))
         else:
-            return render_template("admin_login.html", error="Неверный пароль")
-    return render_template("admin_login.html")
+            return render_template("host.html", error="Неверный пароль")
+    return render_template("host.html")
 
 
 @app.route("/dashboard")
