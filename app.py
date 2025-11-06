@@ -16,11 +16,15 @@ def quiz():
     random.shuffle(questions)
     return render_template("quiz.html", questions=questions)
 
-@app.route("/results", methods=["POST"])
+@app.route("/results", methods=["GET", "POST"])
 def results():
-    data = request.get_json()
-    score = data.get("score", 0)
-    return jsonify({"message": "Результаты получены!", "score": score})
+    if request.method == "POST":
+        data = request.get_json()
+        score = data.get("score", 0)
+        return jsonify({"message": "Результаты получены!", "score": score})
+    else:
+        # при обычном заходе из браузера покажем HTML
+        return render_template("results.html")
 
 @app.route("/host")
 def host():
