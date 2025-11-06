@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Вход в викторину</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h2>🎓 Добро пожаловать в Radiology Quiz!</h2>
+  <p>Введите ваше имя, чтобы присоединиться:</p>
+  <input type="text" id="username" placeholder="Ваше имя" style="padding:10px;border-radius:10px;border:none;width:60%;">
+  <br><br>
+  <button onclick="startQuiz()">Начать</button>
+</div>
+
+<script>
+function startQuiz() {
+  const name = document.getElementById('username').value.trim();
+  if (!name) {
+    alert("Введите имя!");
+    return;
+  }
+  localStorage.setItem("username", name);
+  window.location.href = "/quiz";
+}
+</script>
+</body>
+</html>
