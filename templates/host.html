@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Host Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h2>👨‍⚕️ Панель организатора</h2>
+  <p>Это административная страница для проверки результатов.</p>
+  <table id="leaderboard" style="margin:0 auto; border-collapse:collapse;">
+    <thead>
+      <tr><th>Имя</th><th>Очки</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+// В будущем можно подключить базу данных или WebSocket для реальных результатов
+const scores = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+
+const tbody = document.querySelector("#leaderboard tbody");
+scores.sort((a, b) => b.score - a.score).forEach(s => {
+  tbody.innerHTML += `<tr><td>${s.name}</td><td>${s.score}</td></tr>`;
+});
+</script>
+</body>
+</html>
