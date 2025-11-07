@@ -7,22 +7,41 @@
 </head>
 <body>
 <div class="container">
-  <h2>🎉 Результаты викторины</h2>
+  <h2>🎉 Викторина завершена!</h2>
   <p class="result">Ваш результат: <span id="score"></span></p>
+
+  <!-- Звуки -->
   <audio id="applause" src="{{ url_for('static', filename='applause.mp3') }}"></audio>
+  <audio id="victory" src="{{ url_for('static', filename='victory.mp3') }}"></audio>
 </div>
 
 <script>
 window.onload = () => {
-  const score = localStorage.getItem("score");
+  const score = Number(localStorage.getItem("score"));
   const name = localStorage.getItem("username");
-  document.getElementById("score").innerText = `${score}`;
-  document.getElementById("applause").play();
+  const totalQuestions = localStorage.getItem("totalQuestions"); // будет установлено в quiz.html
 
+  document.getElementById("score").innerText = `${score}`;
+
+  // Определяем, какой звук воспроизвести
+  const applause = document.getElementById("applause");
+  const victory = document.getElementById("victory");
+
+  if (totalQuestions && score === Number(totalQuestions)) {
+    // Все ответы правильные → звук победы
+    victory.volume = 0.8;
+    victory.play();
+  } else {
+    // Просто завершил тест → аплодисменты
+    applause.volume = 0.7;
+    applause.play();
+  }
+
+  // Отправляем результат на сервер
   fetch("/results", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: name, score: Number(score) })
+    body: JSON.stringify({ name: name, score: score })
   });
 };
 </script>
