@@ -18,7 +18,9 @@
 const questions = {{ questions|tojson }};
 let current = 0, score = 0, timeLeft = 15, timer;
 
-function showQuestion() {
+localStorage.setItem("totalQuestions", questions.length);
+  
+  function showQuestion() {
   if (current >= questions.length) {
     localStorage.setItem("score", score);
     window.location.href = "/results";
