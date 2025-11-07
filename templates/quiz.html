@@ -15,11 +15,52 @@
 </div>
 
 <script>
+const questions = {{ questions|tojson }};
+let current = 0;
+let score = 0;
+let timer;
+let timeLeft = 15;
 
+// --- Показ вопроса ---
+function showQuestion() {
+  if (current >= questions.length) {
+    localStorage.setItem("score", score);
+    window.location.href = "/results";
+    return;
+  }
+
+  const q = questions[current];
+  document.getElementById("result").innerText = "";
+  let html = `<h3>${q.question}</h3>`;
+
+  // если есть изображение — показать
+  if (q.image) {
+    html += `<img src="/static/${q.image}" alt="image" style="max-width:400px; margin:10px;">`;
+  }
+  document.getElementById("question").innerHTML = html;
+
+  // перемешиваем варианты
+  const shuffled = q.options.sort(() => Math.random() - 0.5);
+  document.getElementById("options").innerHTML = shuffled
+    .map(o => `<button onclick="checkAnswer('${o}')">${o}</button>`)
+    .join("");
+
+  // запускаем таймер
+  timeLeft = 15;
+  document.getElementById("timer").innerText = timeLeft;
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      current++;
+      showQuestion();
     }
   }, 1000);
 }
 
+// --- Проверка ответа ---
 function checkAnswer(ans) {
   if (ans === questions[current].answer) {
     score++;
