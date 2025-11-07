@@ -15,37 +15,7 @@
 </div>
 
 <script>
-const questions = {{ questions|tojson }};
-let current = 0, score = 0, timeLeft = 15, timer;
 
-localStorage.setItem("totalQuestions", questions.length);
-  
-  function showQuestion() {
-  if (current >= questions.length) {
-    localStorage.setItem("score", score);
-    window.location.href = "/results";
-    return;
-  }
-
-  document.getElementById("result").innerHTML = "";
-  let q = questions[current];
-  document.getElementById("question").innerHTML = `<h3>${q.question}</h3>`;
-  let opts = "";
-  q.options.forEach(o => {
-    opts += `<button onclick="checkAnswer('${o}')">${o}</button>`;
-  });
-  document.getElementById("options").innerHTML = opts;
-  
-  timeLeft = 15;
-  document.getElementById("timer").innerText = timeLeft;
-  clearInterval(timer);
-  timer = setInterval(() => {
-    timeLeft--;
-    document.getElementById("timer").innerText = timeLeft;
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      current++;
-      showQuestion();
     }
   }, 1000);
 }
